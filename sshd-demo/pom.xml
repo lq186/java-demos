@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.lq186.demos</groupId>
+	<artifactId>sshd-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sshd-demo</name>
+	<description>simple demo of sshd</description>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		
+		<sshd.version>2.1.0</sshd.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>apache-sshd</artifactId>
+			<type>pom</type>
+			<version>${sshd.version}</version>
+		</dependency>
+	</dependencies>
+</project>
