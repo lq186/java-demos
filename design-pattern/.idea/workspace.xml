@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c8a5dc3-b06a-4917-a4f8-8173e10f2cf6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/DellPS2MouseImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/IPS2Mouse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/IUSBMouse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/TestBootstrap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/USBMouseAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/package-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -55,7 +49,7 @@
     <session id="-1613042633">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.opened" value="3" />
@@ -74,13 +68,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="3372" />
-          <entry key="txt" value="6" />
+          <entry key="txt" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="3372" />
-          <entry key="PLAIN_TEXT" value="6" />
+          <entry key="PLAIN_TEXT" value="11" />
         </counts>
       </usages-collector>
     </session>
@@ -133,8 +127,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/USBMouseAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="58">
-              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+            <state relative-caret-position="145">
+              <caret line="24" column="37" lean-forward="true" selection-start-line="24" selection-start-column="37" selection-end-line="24" selection-end-column="37" />
               <folding>
                 <element signature="e#867#868#0" expanded="true" />
                 <element signature="e#907#908#0" expanded="true" />
@@ -356,7 +350,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554964402624" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554964440693" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -486,7 +480,7 @@
       <workItem from="1554685568142" duration="15207000" />
       <workItem from="1554862894439" duration="3556000" />
       <workItem from="1554887158995" duration="3853000" />
-      <workItem from="1554948513619" duration="3986000" />
+      <workItem from="1554948513619" duration="4133000" />
     </task>
     <task id="LOCAL-00001" summary="添加原型模式">
       <created>1554891003011</created>
@@ -495,17 +489,24 @@
       <option name="project" value="LOCAL" />
       <updated>1554891003012</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="添加适配器模式">
+      <created>1554964420027</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1554964420027</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26602000" />
+    <option name="totallyTimeSpent" value="26749000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1705757" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1705757" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -515,7 +516,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32899022" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4397394" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4397394" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -544,7 +545,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="添加原型模式" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加原型模式" />
+    <MESSAGE value="添加适配器模式" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加适配器模式" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/factory/MultiMethodSupplierFactory.java">
@@ -919,8 +921,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/lq186/demo/designpattern/adapter/USBMouseAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="58">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+        <state relative-caret-position="145">
+          <caret line="24" column="37" lean-forward="true" selection-start-line="24" selection-start-column="37" selection-end-line="24" selection-end-column="37" />
           <folding>
             <element signature="e#867#868#0" expanded="true" />
             <element signature="e#907#908#0" expanded="true" />
