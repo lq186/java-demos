@@ -20,6 +20,8 @@
 */
 package com.lq186.tools.decompiler;
 
+import com.lq186.tools.decompiler.consts.ConstantTag;
+import com.lq186.tools.decompiler.reader.constantpool.ConstantInfo;
 import com.lq186.tools.decompiler.util.BytesUtils;
 import org.apache.commons.codec.binary.Hex;
 
@@ -45,6 +47,24 @@ public final class ClassFileReader {
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
         try (InputStream inputStream = new FileInputStream(CLASS_FILE_NAME)) {
+
+            com.lq186.tools.decompiler.reader.ClassFileReader reader = new com.lq186.tools.decompiler.reader.ClassFileReader();
+            reader.read(inputStream);
+
+            System.out.println("magic -> " + reader.getMagic());
+            System.out.println("minor version -> " + reader.getMinorVersion());
+            System.out.println("major version -> " + reader.getMajorVersion());
+
+            short constantPoolCount = reader.getConstantPool().getConstantPoolCount();
+            System.out.println("constant pool count -> " + constantPoolCount);
+            ConstantInfo[] constantInfos = reader.getConstantPool().getConstantInfos();
+            if (null != constantInfos && constantInfos.length > 0) {
+                for (short index = 1; index < constantPoolCount; ++index) {
+                    System.out.println(constantInfos[index].displayInfo());
+                }
+            }
+
+            /*
             inputStream.read(u4);
             String magic = Hex.encodeHexString(u4);
             System.out.println("magic -> 0x" + magic);
@@ -63,10 +83,73 @@ public final class ClassFileReader {
 
             Map<Integer, String> constantPoolMap = new HashMap<>();
             for (int i = 1; i < constantPoolCount; ++i) {
+                System.out.println("constant >> " + i);
                 readConstantPool(inputStream);
             }
+
+            inputStream.read(u2);
+            int accessFlags = toInt(u2);
+            System.out.println("access flags -> " + accessFlags);
+
+            inputStream.read(u2);
+            int thisClassIndex = toInt(u2);
+            System.out.println("this class index -> " + thisClassIndex);
+
+            inputStream.read(u2);
+            int superClassIndex = toInt(u2);
+            System.out.println("super class index -> " + superClassIndex);
+
+            inputStream.read(u2);
+            int interfaceCount = toInt(u2);
+            System.out.println("interface count -> " + interfaceCount);
+
+            for (int i = 0; i < interfaceCount; ++i) {
+                inputStream.read(u2);
+                int interfaceIndex = toInt(u2);
+                System.out.println("interface index -> " + interfaceIndex);
+            }
+
+            inputStream.read(u2);
+            int fieldsCount = toInt(u2);
+            System.out.println("fields count -> " + fieldsCount);
+            */
         }
 
+    }
+
+    private static final void readFieldInfo(InputStream inputStream) throws IOException {
+        inputStream.read(u2);
+        int accessFlags = toInt(u2);
+        System.out.println("field access flags -> " + accessFlags);
+
+        inputStream.read(u2);
+        int nameIndex = toInt(u2);
+        System.out.println("field name index -> " + nameIndex);
+
+        inputStream.read(u2);
+        int descriptorIndex = toInt(u2);
+        System.out.println("field descriptor index -> " + descriptorIndex);
+
+        inputStream.read(u2);
+        int attributesCount = toInt(u2);
+        System.out.println("attributes count -> " + attributesCount);
+
+        for (int i = 0; i < attributesCount; ++i) {
+            readFieldAttribute(inputStream);
+        }
+
+    }
+
+    private static final void readFieldAttribute(InputStream inputStream) throws IOException {
+        inputStream.read(u2);
+        int attributeNameIndex = toInt(u2);
+        System.out.println("attribute name index -> " + attributeNameIndex);
+
+        inputStream.read(u4);
+        int attributeLength = toInt(u4);
+        System.out.println("attribute length -> " + attributeLength);
+
+        inputStream.read(u2);
     }
 
     private static final void readConstantPool(InputStream inputStream) throws IOException {
@@ -75,7 +158,7 @@ public final class ClassFileReader {
         System.out.println("constant flag -> " + constantTag);
 
         switch (constantTag) {
-            case ConstantInfo.UTF8:
+            case ConstantTag.UTF8:
                 inputStream.read(u2);
                 int length = toInt(u2);
                 System.out.println("utf-8 缩略编码字符串占用字节数 -> " + length);
@@ -83,39 +166,39 @@ public final class ClassFileReader {
                 inputStream.read(bytes);
                 System.out.printf("长度为[%d]的utf-8缩略编码字符串 -> %s \n", length, new String(bytes));
                 break;
-            case ConstantInfo.INTEGER:
+            case ConstantTag.INTEGER:
                 inputStream.read(u4);
                 int intValue = BytesUtils.toInt(u4);
                 System.out.println("int value -> " + intValue);
                 break;
-            case ConstantInfo.FLOAT:
+            case ConstantTag.FLOAT:
                 inputStream.read(u4);
-                float floatValue = BytesUtils.toFloat(u4);
+                float floatValue = BytesUtils.toInt(u4);
                 System.out.println("float value -> " + floatValue);
                 break;
-            case ConstantInfo.LONG:
+            case ConstantTag.LONG:
                 inputStream.read(u8);
                 long longValue = BytesUtils.toLong(u8);
                 System.out.println("long value -> " + longValue);
                 break;
-            case ConstantInfo.DOUBLE:
+            case ConstantTag.DOUBLE:
                 inputStream.read(u8);
-                double doubleValue = BytesUtils.toDouble(u8);
+                double doubleValue = BytesUtils.toLong(u8);
                 System.out.println("double value -> " + doubleValue);
                 break;
-            case ConstantInfo.CLASS:
+            case ConstantTag.CLASS:
                 inputStream.read(u2);
                 int classIndex = toInt(u2);
                 System.out.println("class index -> " + classIndex);
                 break;
-            case ConstantInfo.STRING:
+            case ConstantTag.STRING:
                 inputStream.read(u2);
                 int stringIndex = toInt(u2);
                 System.out.println("string index -> " + stringIndex);
                 break;
-            case ConstantInfo.FIELD_REF:
-            case ConstantInfo.METHOD_REF:
-            case ConstantInfo.INTERFACE_METHOD_REF:
+            case ConstantTag.FIELD_REF:
+            case ConstantTag.METHOD_REF:
+            case ConstantTag.INTERFACE_METHOD_REF:
                 inputStream.read(u2);
                 int classIndex2 = toInt(u2);
                 System.out.println("field ref / method ref / interface method ref [class index] -> " + classIndex2);
@@ -123,7 +206,7 @@ public final class ClassFileReader {
                 int nameAndTypeIndex2 = toInt(u2);
                 System.out.println("field ref / method ref / interface method ref [name and type index] -> " + nameAndTypeIndex2);
                 break;
-            case ConstantInfo.NAME_AND_TYPE:
+            case ConstantTag.NAME_AND_TYPE:
                 inputStream.read(u2);
                 int nameIndex = toInt(u2);
                 System.out.println("name and type [name index] -> " + nameIndex);
