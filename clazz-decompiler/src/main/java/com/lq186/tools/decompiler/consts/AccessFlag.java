@@ -22,100 +22,51 @@ package com.lq186.tools.decompiler.consts;
 
 public final class AccessFlag {
 
-    public static class Class {
-        public static final int PUBLIC = 0x0001;
-
-        public static final int FINAL = 0x0010;
-
-        public static final int SUPER = 0x0020;
-
-        public static final int INTERFACE = 0x0200;
-
-        public static final int ABSTRACT = 0x0400;
-
-        // 标识这个类不是由用户代码产生
-        public static final int SYNTHETIC = 0x1000;
-
-        // 标识这是一个注解
-        public static final int ANNOTATION = 0x2000;
-
-        // 标识这是一个枚举
-        public static final int ENUM = 0x4000;
+    public static final String getClassAccessFlagsText(final short accessFlag) {
+        final ClassAccessFlag[] flags = ClassAccessFlag.values();
+        final StringBuilder builder = new StringBuilder();
+        for (ClassAccessFlag flag : flags) {
+            if (0 != (accessFlag & flag.getValue())) {
+                builder.append(", ").append(flag.getText());
+            }
+        }
+        String result = builder.toString();
+        return result.length() > 0 ? result.substring(2) : result;
     }
 
-    public static class Field {
-        public static final int PUBLIC = 0x0001;
-
-        public static final int PRIVATE = 0x0002;
-
-        public static final int PROTECTED = 0x0004;
-
-        public static final int STATIC = 0x0008;
-
-        public static final int FINAL = 0x0010;
-
-        public static final int VOLATILE = 0x0040;
-
-        public static final int TRANSIENT = 0x0080;
-
-        // 是否为编译器自己主动产生
-        public static final int SYNTHETIC = 0x1000;
-
-        public static final int ENUM = 0x4000;
+    public static final String getFieldAccessFlagsText(final short accessFlag) {
+        final FieldAccessFlag[] flags = FieldAccessFlag.values();
+        final StringBuilder builder = new StringBuilder();
+        for (FieldAccessFlag flag : flags) {
+            if (0 != (accessFlag & flag.getValue())) {
+                builder.append(", ").append(flag.getText());
+            }
+        }
+        String result = builder.toString();
+        return result.length() > 0 ? result.substring(2) : result;
     }
 
-    public static class Method {
-        public static final int PUBLIC = 0x0001;
-
-        public static final int PRIVATE = 0x0002;
-
-        public static final int PROTECTED = 0x0004;
-
-        public static final int STATIC = 0x0008;
-
-        public static final int FINAL = 0x0010;
-
-        public static final int SYNCHRONIZED = 0x0020;
-
-        // 是否是有编译器产生的桥接方法
-        public static final int BRIDGE = 0x0040;
-
-        // 是否接受不定参数
-        public static final int VARARGS = 0x0080;
-
-        public static final int NATIVE = 0x0100;
-
-        public static final int ABSTRACT = 0x0400;
-
-        // 是否为 strictfp
-        public static final int STRICTFP = 0x0800;
-
-        // 是否为编译器自己主动产生
-        public static final int SYNTHETIC = 0x1000;
-
+    public static final String getMethodAccessFlagsText(final short accessFlag) {
+        final MethodAccessFlag[] flags = MethodAccessFlag.values();
+        final StringBuilder builder = new StringBuilder();
+        for (MethodAccessFlag flag : flags) {
+            if (0 != (accessFlag & flag.getValue())) {
+                builder.append(", ").append(flag.getText());
+            }
+        }
+        String result = builder.toString();
+        return result.length() > 0 ? result.substring(2) : result;
     }
 
-    public static class InnerClass {
-
-        public static final int PIBLIC = 0x0001;
-
-        public static final int PRIVATE = 0x0002;
-
-        public static final int PROTECTED = 0x0004;
-
-        public static final int STATIC = 0x0008;
-
-        public static final int FINAL = 0x0010;
-
-        public static final int INTERFACE = 0x0020;
-
-        public static final int ABSTRACT = 0x0400;
-
-        // 编译器主动产生
-        public static final int SYNTHETIC = 0x1000;
-
-        public static final int ANNOTATION = 0x4000;
-
-        public static final int ENUM = 0x4000;
+    public static final String getInnerClassAccessFlagsText(final short accessFlag) {
+        final InnerClassAccessFlag[] flags = InnerClassAccessFlag.values();
+        final StringBuilder builder = new StringBuilder();
+        for (InnerClassAccessFlag flag : flags) {
+            if (0 != (accessFlag & flag.getValue())) {
+                builder.append(", ").append(flag.getText());
+            }
+        }
+        String result = builder.toString();
+        return result.length() > 0 ? result.substring(2) : result;
     }
 }

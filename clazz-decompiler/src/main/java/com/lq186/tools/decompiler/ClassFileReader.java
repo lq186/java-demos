@@ -14,13 +14,14 @@
     limitations under the License.
 */
 /*
-    FileName: ClassFileReader.java
+    FileName: ClassFile.java
     Date: 2019/4/15
     Author: lq
 */
 package com.lq186.tools.decompiler;
 
 import com.lq186.tools.decompiler.consts.ConstantTag;
+import com.lq186.tools.decompiler.reader.ClassFile;
 import com.lq186.tools.decompiler.reader.constantpool.ConstantInfo;
 import com.lq186.tools.decompiler.util.BytesUtils;
 import org.apache.commons.codec.binary.Hex;
@@ -29,8 +30,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class ClassFileReader {
 
@@ -48,7 +47,7 @@ public final class ClassFileReader {
 
         try (InputStream inputStream = new FileInputStream(CLASS_FILE_NAME)) {
 
-            com.lq186.tools.decompiler.reader.ClassFileReader reader = new com.lq186.tools.decompiler.reader.ClassFileReader();
+            ClassFile reader = new ClassFile();
             reader.read(inputStream);
 
             System.out.println("magic -> " + reader.getMagic());

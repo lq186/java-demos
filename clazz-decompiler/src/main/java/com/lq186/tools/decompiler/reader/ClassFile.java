@@ -14,7 +14,7 @@
     limitations under the License.
 */
 /*
-    FileName: ClassFileReader.java
+    FileName: ClassFile.java
     Date: 2019/4/16
     Author: lq
 */
@@ -27,7 +27,7 @@ import com.lq186.tools.decompiler.reader.constantpool.ConstantPool;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class ClassFileReader implements IReader {
+public final class ClassFile implements IReader {
 
     private final U4 magicU4 = new U4();
 
@@ -37,12 +37,42 @@ public final class ClassFileReader implements IReader {
 
     private final ConstantPool constantPool = new ConstantPool();
 
+    private final U2 accessFlagU2 = new U2();
+
+    private final U2 thisClassIndexU2 = new U2();
+
+    private final U2 supperClassIndexU2 = new U2();
+
+    private final U2 interfacesCountU2 = new U2();
+
+    private U2[] interfacesIndexU2;
+
+    private final U2 fieldsCountU2 = new U2();
+
     @Override
     public void read(InputStream inputStream) throws IOException {
         magicU4.read(inputStream);
         minorVersionU2.read(inputStream);
         majorVersionU2.read(inputStream);
         constantPool.read(inputStream);
+
+        accessFlagU2.read(inputStream);
+        thisClassIndexU2.read(inputStream);
+        supperClassIndexU2.read(inputStream);
+        interfacesCountU2.read(inputStream);
+
+        final short interfacesCount = interfacesCountU2.getValue();
+        interfacesIndexU2 = new U2[interfacesCount];
+        for (short i = 0; i < interfacesCount; ++i) {
+            final U2 interfaceIndexU2 = new U2();
+            interfaceIndexU2.read(inputStream);
+            interfacesIndexU2[i] = interfaceIndexU2;
+        }
+
+        fieldsCountU2.read(inputStream);
+        final short fieldsCount = fieldsCountU2.getValue();
+
+
     }
 
     public String getMagic() {
