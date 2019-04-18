@@ -55,15 +55,20 @@ public final class BootstrapMethodsAttributeInfo extends AttributeInfo {
 
     @Override
     protected void buildString(StringBuilder builder) {
-        builder.append("\t bootstrap methods count: ").append(getBootstrapMethodsCount()).append(", \n");
-        if (0 < getBootstrapMethodsCount()) {
-            builder.append("\t bootstrap methods: { \n");
-            for (BootstrapMethod bootstrapMethod : bootstrapMethods) {
-                builder.append("\t\t method ref index: ").append(bootstrapMethod.getBootstrapMethodRefIndex()).append(", \n");
-                builder.append("\t\t method arguments count: ").append(bootstrapMethod.getBootstrapMethodArgumentsCount()).append(", \n");
-                builder.append("\t\t method arguments: ").append(bootstrapMethod.getBootstrapArguments()).append("\n");
+        final short methodsCount = getBootstrapMethodsCount();
+        builder.append("\t bootstrap methods count: ").append(methodsCount).append(", \n");
+        if (0 < methodsCount) {
+            builder.append("\t bootstrap methods: [ \n");
+            BootstrapMethod bootstrapMethod;
+            for (short i = 0; i < methodsCount; ++i) {
+                bootstrapMethod = bootstrapMethods[i];
+                builder.append("\t\t { \n");
+                builder.append("\t\t\t method ref index: ").append(bootstrapMethod.getBootstrapMethodRefIndex()).append(", \n");
+                builder.append("\t\t\t method arguments count: ").append(bootstrapMethod.getBootstrapMethodArgumentsCount()).append(", \n");
+                builder.append("\t\t\t method arguments: ").append(bootstrapMethod.getBootstrapArguments()).append("\n");
+                builder.append("\t\t }").append(i < (methodsCount - 1) ? ", \n" : "\n");
             }
-            builder.append("\t }");
+            builder.append("\t ], \n");
         }
     }
 

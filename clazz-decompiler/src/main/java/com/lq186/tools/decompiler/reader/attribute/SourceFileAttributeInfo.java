@@ -34,6 +34,11 @@ public class SourceFileAttributeInfo extends AttributeInfo {
         sourceFileIndexU2.read(inputStream);
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t source file index: ").append(getSourceFileIndex()).append(", \n");
+    }
+
     public short getSourceFileIndex() {
         return sourceFileIndexU2.getValue();
     }

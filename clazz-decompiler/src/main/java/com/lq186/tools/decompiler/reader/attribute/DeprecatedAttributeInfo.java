@@ -30,4 +30,8 @@ public final class DeprecatedAttributeInfo extends AttributeInfo {
 
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t deprecated: true, \n");
+    }
 }

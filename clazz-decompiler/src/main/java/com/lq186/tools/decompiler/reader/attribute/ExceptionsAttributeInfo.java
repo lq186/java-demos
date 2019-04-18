@@ -46,6 +46,22 @@ public final class ExceptionsAttributeInfo extends AttributeInfo {
         }
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        final short exceptionsCount = getExceptionsCount();
+        builder.append("\t exceptions count: ").append(exceptionsCount).append(", \n");
+        if (exceptionsCount > 0) {
+            builder.append("\t exception table: [ \n");
+            final short[] exceptionIndexTable = getExceptionIndexTable();
+            for (short i = 0; i < exceptionsCount; ++i) {
+                builder.append("\t\t { \n");
+                builder.append("\t\t\n exception index: ").append(exceptionIndexTable[i]).append("\n");
+                builder.append("\t\t }").append(i < (exceptionsCount - 1) ? ", " : "").append("\n");
+            }
+            builder.append("\t ], \n");
+        }
+    }
+
     public short getExceptionsCount() {
         return exceptionsCountU2.getValue();
     }

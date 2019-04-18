@@ -46,6 +46,26 @@ public final class LineNumberTableAttributeInfo extends AttributeInfo {
         }
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        final short length = getLineNumberTableLength();
+        builder.append("\t line number table length: ").append(length).append(", \n");
+        if (length > 0) {
+            builder.append("\t line number info: [ \n");
+
+            LineNumberInfo lineNumberInfo;
+            for (short i = 0; i < length; ++i) {
+                lineNumberInfo = lineNumberInfos[i];
+                builder.append("\t\t { \n");
+                builder.append("\t\t\t start pc: ").append(lineNumberInfo.getStartPc()).append(", \n");
+                builder.append("\t\t\t line number: ").append(lineNumberInfo.getLineNumber()).append("\n");
+                builder.append("\t\t }").append(i < (length - 1) ? ", \n" : "\n");
+            }
+
+            builder.append("\t ], \n");
+        }
+    }
+
     public short getLineNumberTableLength() {
         return lineNumberTableLengthU2.getValue();
     }

@@ -14,8 +14,8 @@
     limitations under the License.
 */
 /*
-    FileName: FieldInfo.java
-    Date: 2019/4/17
+    FileName: MethodInfo.java
+    Date: 2019/4/18
     Author: lq
 */
 package com.lq186.tools.decompiler.reader;
@@ -27,7 +27,7 @@ import com.lq186.tools.decompiler.reader.constantpool.ConstantInfo;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class FieldInfo implements IReader {
+public final class MethodInfo implements IReader {
 
     private final ConstantInfo[] constantInfos;
 
@@ -41,7 +41,7 @@ public final class FieldInfo implements IReader {
 
     private AttributeInfo[] attributeInfos;
 
-    public FieldInfo(ConstantInfo[] constantInfos) {
+    public MethodInfo(ConstantInfo[] constantInfos) {
         this.constantInfos = constantInfos;
     }
 

@@ -45,6 +45,28 @@ public final class InnerClassesAttributeInfo extends AttributeInfo {
 
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        final short classesCount = getClassesCount();
+        builder.append("\t classes count: ").append(classesCount).append(", \n");
+        if (classesCount > 0) {
+            builder.append("\t classes: [ \n");
+
+            InnerClassInfo classInfo;
+            for (short i = 0; i < classesCount; ++i) {
+                classInfo = innerClassInfos[i];
+                builder.append("\t\t { \n");
+                builder.append("\t\t\t class index: ").append(classInfo.getClassIndex()).append(", \n");
+                builder.append("\t\t\t outer class index: ").append(classInfo.getOuterClassIndex()).append(", \n");
+                builder.append("\t\t\t name index: ").append(classInfo.getNameIndex()).append(", \n");
+                builder.append("\t\t\t access flags: ").append(classInfo.getAccessFlags()).append("\n");
+                builder.append("\t\t }").append(i < (classesCount - 1) ? ", \n" : "\n");
+            }
+
+            builder.append("\t ], \n");
+        }
+    }
+
     public short getClassesCount() {
         return classesCountU2.getValue();
     }

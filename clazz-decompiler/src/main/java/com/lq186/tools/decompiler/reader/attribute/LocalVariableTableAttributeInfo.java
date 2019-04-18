@@ -45,6 +45,29 @@ public final class LocalVariableTableAttributeInfo extends AttributeInfo {
         }
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        final short length = getLocalVariableTableLength();
+        builder.append("\t local variable table length: ").append(length).append(", \n");
+        if (length > 0) {
+            builder.append("\t local variable info: [ \n");
+
+            LocalVariableInfo localVariableInfo;
+            for (short i = 0; i < length; ++i) {
+                localVariableInfo = localVariableTable[i];
+                builder.append("\t\t { \n");
+                builder.append("\t\t\t start pc: ").append(localVariableInfo.getStartPc()).append(", \n");
+                builder.append("\t\t\t length: ").append(localVariableInfo.getLength()).append(", \n");
+                builder.append("\t\t\t name index: ").append(localVariableInfo.getNameIndex()).append(", \n");
+                builder.append("\t\t\t descriptor index: ").append(localVariableInfo.getDescriptorIndex()).append(", \n");
+                builder.append("\t\t\t index: ").append(localVariableInfo.getIndex()).append(" \n");
+                builder.append("\t\t }").append(i < (length - 1) ? ", \n" : "\n");
+            }
+
+            builder.append("\t ], \n");
+        }
+    }
+
     public short getLocalVariableTableLength() {
         return localVariableTableLengthU2.getValue();
     }

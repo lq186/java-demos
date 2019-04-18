@@ -34,6 +34,11 @@ public class ConstantValueAttributeInfo extends AttributeInfo {
         constantValueIndexU2.read(inputStream);
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t constant value index: ").append(getConstantValueIndex()).append(", \n");
+    }
+
     public short getConstantValueIndex() {
         return constantValueIndexU2.getValue();
     }

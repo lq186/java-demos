@@ -29,4 +29,9 @@ public final class SyntheticAttributeInfo extends AttributeInfo {
     public void read(InputStream inputStream) throws IOException {
 
     }
+
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t synthetic: true, \n");
+    }
 }

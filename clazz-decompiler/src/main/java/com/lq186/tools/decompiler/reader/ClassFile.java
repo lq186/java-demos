@@ -20,6 +20,7 @@
 */
 package com.lq186.tools.decompiler.reader;
 
+import com.lq186.tools.decompiler.reader.attribute.AttributeInfo;
 import com.lq186.tools.decompiler.reader.basic.U2;
 import com.lq186.tools.decompiler.reader.basic.U4;
 import com.lq186.tools.decompiler.reader.constantpool.ConstantPool;
@@ -49,6 +50,16 @@ public final class ClassFile implements IReader {
 
     private final U2 fieldsCountU2 = new U2();
 
+    private FieldInfo[] fieldInfos;
+
+    private final U2 methodsCountU2 = new U2();
+
+    private MethodInfo[] methodInfos;
+
+    private final U2 attributesCountU2 = new U2();
+
+    private AttributeInfo[] attributeInfos;
+
     @Override
     public void read(InputStream inputStream) throws IOException {
         magicU4.read(inputStream);
@@ -71,8 +82,26 @@ public final class ClassFile implements IReader {
 
         fieldsCountU2.read(inputStream);
         final short fieldsCount = fieldsCountU2.getValue();
+        fieldInfos = new FieldInfo[fieldsCount];
+        for (short i = 0; i < fieldsCount; ++i) {
+            fieldInfos[i] = new FieldInfo(constantPool.getConstantInfos());
+            fieldInfos[i].read(inputStream);
+        }
 
+        methodsCountU2.read(inputStream);
+        final short methodsCount = methodsCountU2.getValue();
+        methodInfos = new MethodInfo[methodsCount];
+        for (short i = 0; i < methodsCount; ++i) {
+            methodInfos[i] = new MethodInfo(constantPool.getConstantInfos());
+            methodInfos[i].read(inputStream);
+        }
 
+        attributesCountU2.read(inputStream);
+        final short attributesCount = attributesCountU2.getValue();
+        attributeInfos = new AttributeInfo[attributesCount];
+        for (short i = 0; i < attributesCount; ++i) {
+            attributeInfos[i] = AttributeInfo.getInstance(inputStream, constantPool.getConstantInfos());
+        }
     }
 
     public String getMagic() {
@@ -89,5 +118,54 @@ public final class ClassFile implements IReader {
 
     public ConstantPool getConstantPool() {
         return constantPool;
+    }
+
+    public short getAccessFlag() {
+        return accessFlagU2.getValue();
+    }
+
+    public short getThisClassIndex() {
+        return thisClassIndexU2.getValue();
+    }
+
+    public short getSupperClassIndex() {
+        return supperClassIndexU2.getValue();
+    }
+
+    public short getInterfacesCount() {
+        return interfacesCountU2.getValue();
+    }
+
+    private short[] getInterfacesIndex() {
+        final short interfacesCount = getInterfacesCount();
+        short[] interfacesIndex = new short[interfacesCount];
+        for (short i = 0; i < interfacesCount; ++i) {
+            interfacesIndex[i] = interfacesIndexU2[i].getValue();
+        }
+        return interfacesIndex;
+    }
+
+    public short getFieldsCount() {
+        return fieldsCountU2.getValue();
+    }
+
+    public FieldInfo[] getFieldInfos() {
+        return fieldInfos;
+    }
+
+    public short getMethodsCount() {
+        return methodsCountU2.getValue();
+    }
+
+    public MethodInfo[] getMethodInfos() {
+        return methodInfos;
+    }
+
+    public short getAttributesCount() {
+        return attributesCountU2.getValue();
+    }
+
+    public AttributeInfo[] getAttributeInfos() {
+        return attributeInfos;
     }
 }

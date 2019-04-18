@@ -73,6 +73,42 @@ public final class CodeAttributeInfo extends AttributeInfo {
         }
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t max stack: ").append(getMaxStack()).append(", \n");
+        builder.append("\t max locals: ").append(getMaxLocals()).append(", \n");
+        builder.append("\t max code length: ").append(getCodeLength()).append(", \n");
+        builder.append("\t code: ").append(getCodeBytes()).append(", \n");
+
+        final short exceptionTableLength = getExceptionTableLength();
+        builder.append("\t exception table length: ").append(exceptionTableLength).append(", \n");
+        if (exceptionTableLength > 0) {
+            builder.append("\t exception table: [ \n");
+
+            ExceptionInfo exceptionInfo;
+            for (short i = 0; i < exceptionTableLength; ++i) {
+                exceptionInfo = exceptionTable[i];
+                builder.append("\t\t {").append("\n");
+                builder.append("\t\t\t start pc: ").append(exceptionInfo.getStartPc());
+                builder.append("\t\t\t end pc: ").append(exceptionInfo.getEndPc());
+                builder.append("\t\t\t handler pc: ").append(exceptionInfo.getHandlerPc());
+                builder.append("\t\t\t catch type index: ").append(exceptionInfo.getCatchTypeIndex());
+                builder.append("\t\t }").append(i < (exceptionTableLength - 1) ? ", " : "").append("\n");
+            }
+            builder.append("\t ], \n");
+        }
+
+        final short attributesCount = getAttributesCount();
+        builder.append("\t attributes count: ").append(attributesCount).append(", \n");
+        if (attributesCount > 0) {
+            builder.append("\t attributes: [ \n");
+            for (short i = 0; i < attributesCount; ++i) {
+                builder.append(attributes[i].displayInfo());
+            }
+            builder.append("\t ], \n");
+        }
+    }
+
     public short getMaxStack() {
         return maxStackU2.getValue();
     }
@@ -91,6 +127,10 @@ public final class CodeAttributeInfo extends AttributeInfo {
 
     public String getCode() throws UnsupportedEncodingException {
         return new String(codeBytes, "UTF-8");
+    }
+
+    public byte[] getCodeBytes() {
+        return codeBytes;
     }
 
     public ExceptionInfo[] getExceptionTable() {

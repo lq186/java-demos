@@ -34,6 +34,11 @@ public class SignatureAttributeInfo extends AttributeInfo {
         signatureIndexU2.read(inputStream);
     }
 
+    @Override
+    protected void buildString(StringBuilder builder) {
+        builder.append("\t signature index: ").append(getSignatureIndex()).append(", \n");
+    }
+
     public short getSignatureIndex() {
         return signatureIndexU2.getValue();
     }

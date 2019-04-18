@@ -29,6 +29,7 @@ import com.lq186.tools.decompiler.reader.constantpool.ConstantUtf8Info;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 public abstract class AttributeInfo implements IReader {
 
@@ -114,9 +115,13 @@ public abstract class AttributeInfo implements IReader {
     public String displayInfo() {
         StringBuilder builder = new StringBuilder();
         builder.append("{ \n")
-                .append("\t attribute name index: ").append(getAttributeNameIndex()).append(", \n")
-                .append("\t attribute name: ").append(((ConstantUtf8Info) constantInfos[getAttributeNameIndex()]).getUtf8Bytes()).append(", \n")
-                .append("\t attribute length: ").append(getAttributeLength()).append(", \n");
+                .append("\t attribute name index: ").append(getAttributeNameIndex()).append(", \n");
+        try {
+            builder.append("\t attribute name: ").append(((ConstantUtf8Info) constantInfos[getAttributeNameIndex()]).getUtf8String()).append(", \n");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        builder.append("\t attribute length: ").append(getAttributeLength()).append(", \n");
         buildString(builder);
         builder.append("}");
         return builder.toString();
