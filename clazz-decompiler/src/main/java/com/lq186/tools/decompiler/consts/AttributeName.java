@@ -46,4 +46,10 @@ public final class AttributeName {
 
     public static final String INNER_CLASSES = "InnerClasses";
 
+    public static final String RUNTIME_INVISIBLE_ANNOTATIONS = "RuntimeInvisibleAnnotations";
+
+    public static final String RUNTIME_VISIBLE_ANNOTATIONS = "RuntimeVisibleAnnotations";
+
+    public static final String STACK_MAP_TABLE = "StackMapTable";
+
 }

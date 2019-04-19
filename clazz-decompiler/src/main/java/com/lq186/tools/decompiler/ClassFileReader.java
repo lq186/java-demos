@@ -26,17 +26,14 @@ import com.lq186.tools.decompiler.reader.ClassFile;
 import com.lq186.tools.decompiler.reader.FieldInfo;
 import com.lq186.tools.decompiler.reader.MethodInfo;
 import com.lq186.tools.decompiler.reader.attribute.AttributeInfo;
-import com.lq186.tools.decompiler.reader.constantpool.ConstantClassInfo;
-import com.lq186.tools.decompiler.reader.constantpool.ConstantInfo;
-import com.lq186.tools.decompiler.reader.constantpool.ConstantUtf8Info;
-import com.lq186.tools.decompiler.util.BytesUtils;
-import org.apache.commons.codec.binary.Hex;
+import com.lq186.tools.decompiler.reader.constantpool.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+// http://www.blogjava.net/DLevin/archive/2011/09/05/358034.html
 public final class ClassFileReader {
 
     private static final String CLASS_FILE_NAME = "D:\\Temp\\TestClassLoad.class";
@@ -103,6 +100,25 @@ public final class ClassFileReader {
                 ConstantInfo cInfo = constantInfos[i];
                 if (cInfo.getTag() == ConstantTag.CLASS) {
                     System.out.println("import " + ((ConstantUtf8Info) constantInfos[((ConstantClassInfo) cInfo).getClassIndex()]).getUtf8String());
+                }
+            }
+
+            for (int i = 1; i < constantInfos.length; ++i) {
+                ConstantInfo cInfo = constantInfos[i];
+                if (cInfo.getTag() == ConstantTag.FIELD_REF) {
+                    ConstantFieldRefInfo fieldRefInfo = ((ConstantFieldRefInfo) cInfo);
+                    System.out.println("field type: " + ((ConstantUtf8Info) constantInfos[((ConstantClassInfo) constantInfos[fieldRefInfo.getClassIndex()]).getClassIndex()]).getUtf8String());
+                    ConstantInfo nameAndTypeConstantInfo = constantInfos[fieldRefInfo.getNameAndTypeIndex()];
+
+                    System.out.println("name: " + ((ConstantUtf8Info) constantInfos[((ConstantNameAndTypeInfo) nameAndTypeConstantInfo).getNameIndex()]).getUtf8String());
+                    System.out.println("desc: " + ((ConstantUtf8Info) constantInfos[((ConstantNameAndTypeInfo) nameAndTypeConstantInfo).getDescriptorIndex()]).getUtf8String());
+                }
+            }
+
+            for (int i = 1; i < constantInfos.length; ++i) {
+                ConstantInfo cInfo = constantInfos[i];
+                if (cInfo.getTag() == ConstantTag.UTF8) {
+                    System.out.println("utf8 value: " + ((ConstantUtf8Info) cInfo).getUtf8String());
                 }
             }
         }
