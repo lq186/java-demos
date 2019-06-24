@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect

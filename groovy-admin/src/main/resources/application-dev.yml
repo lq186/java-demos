@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo?autoReconnect=true&useUnicode=true&serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8
+    username: demo
+    password: Lonch
+    data: classpath:/sql/init-mysql.sql
+    initialization-mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
