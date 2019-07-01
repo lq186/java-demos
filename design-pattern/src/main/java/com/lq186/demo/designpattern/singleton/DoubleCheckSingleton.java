@@ -25,7 +25,9 @@ package com.lq186.demo.designpattern.singleton;
  */
 public final class DoubleCheckSingleton {
 
-    private static DoubleCheckSingleton instance;
+    // add volatile to instance
+    // 线程间共享变量 instance
+    private static volatile DoubleCheckSingleton instance;
 
     /**
      * 私有构造
