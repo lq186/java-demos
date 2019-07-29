@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/demo?autoReconnect=true&useUnicode=true&serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8
-    username: demo
-    password: Lonch
+    url: jdbc:mysql://39.98.7.208:13306/groovy_demo?autoReconnect=true&useUnicode=true&serverTimezone=UTC&useSSL=false&characterEncoding=UTF-8
+    username: groovy_demo
+    password: GroovyDemo_123
     data: classpath:/sql/init-mysql.sql
     initialization-mode: always
 

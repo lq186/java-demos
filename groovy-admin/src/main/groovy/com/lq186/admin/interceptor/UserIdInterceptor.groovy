@@ -7,6 +7,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
 import javax.servlet.http.HttpServletRequest
@@ -19,6 +20,10 @@ class UserIdInterceptor implements HandlerInterceptor {
 
     @Override
     boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (!(handler instanceof HandlerMethod)) {
+            return true
+        }
+        return true
         def token = request.getHeader(Parameters.TOKEN)
         if (!token) {
             token = request.getParameter(Parameters.TOKEN)

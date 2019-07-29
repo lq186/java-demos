@@ -14,7 +14,7 @@ repositories {
 }
 
 ext {
-
+	swagger_version="2.9.2"
 }
 
 dependencies {
@@ -23,6 +23,9 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'mysql:mysql-connector-java:5.1.47'
+
+	implementation "io.springfox:springfox-swagger2:${swagger_version}"
+	implementation "io.springfox:springfox-swagger-ui:${swagger_version}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
