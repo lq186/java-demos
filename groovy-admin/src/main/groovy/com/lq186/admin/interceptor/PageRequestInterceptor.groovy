@@ -18,8 +18,8 @@ class PageRequestInterceptor implements HandlerInterceptor {
         // propA:desc,propB:asc
         String sort = request.getParameter("sort")
         PageRequestContext.setPageRequest(
-                page && page.isNumber() && page > 0 ? (page as int) - 1 : 0,
-                size && size.isNumber() && size > 0 ? (size as int) : 10,
+                page && page.isNumber() && (page as int) > 0 ? (page as int) - 1 : 0,
+                size && size.isNumber() && (size as int) > 0 ? (size as int) : 10,
                 sort
         )
         return true

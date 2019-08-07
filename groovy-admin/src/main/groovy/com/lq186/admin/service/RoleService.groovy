@@ -1,7 +1,7 @@
 package com.lq186.admin.service
 
-import com.lq186.admin.entity.PermissionResource
-import com.lq186.admin.entity.Role
+import com.lq186.admin.model.entity.PermissionResource
+import com.lq186.admin.model.entity.Role
 import org.springframework.data.domain.Page
 
 interface RoleService {

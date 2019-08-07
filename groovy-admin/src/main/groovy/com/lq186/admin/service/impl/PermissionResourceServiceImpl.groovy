@@ -2,7 +2,7 @@ package com.lq186.admin.service.impl
 
 import com.lq186.admin.consts.Errors
 import com.lq186.admin.context.PageRequestContext
-import com.lq186.admin.entity.PermissionResource
+import com.lq186.admin.model.entity.PermissionResource
 import com.lq186.admin.exception.CodeException
 import com.lq186.admin.repo.PermissionResourceRepo
 import com.lq186.admin.service.PermissionResourceService

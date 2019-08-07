@@ -1,6 +1,6 @@
 package com.lq186.admin.service
 
-import com.lq186.admin.entity.User
+import com.lq186.admin.model.entity.User
 import com.lq186.admin.util.PageUtils
 import org.junit.Test
 import org.junit.runner.RunWith

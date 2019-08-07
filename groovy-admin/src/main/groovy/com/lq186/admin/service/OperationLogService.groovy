@@ -1,6 +1,6 @@
 package com.lq186.admin.service
 
-import com.lq186.admin.entity.OperationLog
+import com.lq186.admin.model.entity.OperationLog
 import org.springframework.data.domain.Page
 
 interface OperationLogService {

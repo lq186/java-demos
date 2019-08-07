@@ -1,27 +1,26 @@
 package com.lq186.admin.common
 
 import com.lq186.admin.consts.Response
-import com.lq186.admin.util.BeanUtils
+import com.lq186.admin.model.views.PageData
 import com.lq186.admin.util.PageUtils
 import org.springframework.data.domain.Page
 
-final class ResponseBean implements Serializable {
+final class ResponseBean<T> implements Serializable {
 
     String code
 
     String msg
 
-    Object data
+    T data
 
-    static ResponseBean success() {
+    static ResponseBean<Void> success() {
         new ResponseBean(
                 code: Response.Code.OK,
-                msg: Response.Msg.OK_MSG,
-                data: ""
+                msg: Response.Msg.OK_MSG
         )
     }
 
-    static ResponseBean success(Page<?> page) {
+    static ResponseBean<Map<String, Object>> success(Page<?> page) {
         new ResponseBean(
                 code: Response.Code.OK,
                 msg: Response.Msg.OK_MSG,
@@ -29,47 +28,35 @@ final class ResponseBean implements Serializable {
         )
     }
 
-    static ResponseBean success(def data) {
-        def resultData = toMapIfPossible(data)
+    static <V, E extends EntityIdable> ResponseBean<PageData<V>> success(Page<E> page, Class<V> classOfV) {
+        new ResponseBean<PageData<V>>(
+                code: Response.Code.OK,
+                msg: Response.Msg.OK_MSG,
+                data: page ? PageUtils.toView(page, classOfV) : new PageData<>()
+        )
+    }
+
+    static <V> ResponseBean<V> success(V view) {
         new ResponseBean(
                 code: Response.Code.OK,
                 msg: Response.Msg.OK_MSG,
-                data: resultData ?: ""
+                data: view ?: null
         )
     }
 
-    static ResponseBean failed(String code, String msg) {
+    static ResponseBean<Void> failed(String code, String msg) {
+        new ResponseBean(
+                code: code ?: Response.Code.EXCEPTION,
+                msg: msg ?: Response.Msg.EXCEPTION_MSG
+        )
+    }
+
+    static <V> ResponseBean<V> failed(String code, String msg, V data) {
         new ResponseBean(
                 code: code ?: Response.Code.EXCEPTION,
                 msg: msg ?: Response.Msg.EXCEPTION_MSG,
-                data: ""
+                data: data ?: [:]
         )
     }
 
-    static ResponseBean failed(String code, String msg, def data) {
-        def resultData = toMapIfPossible(data)
-        new ResponseBean(
-                code: code ?: Response.Code.EXCEPTION,
-                msg: msg ?: Response.Msg.EXCEPTION_MSG,
-                data: resultData ?: ""
-        )
-    }
-
-    private static Object toMapIfPossible(def data) {
-        if (data instanceof Map) {
-            return data
-        }
-
-        if (data instanceof EntityIdable) {
-            return (data as EntityIdable).toMap()
-        }
-
-        if (data instanceof List) {
-            return (data as List).collect {
-                (it instanceof EntityIdable) ? (it as EntityIdable).toMap() : it
-            }
-        }
-
-        return data
-    }
 }

@@ -1,4 +1,4 @@
-package com.lq186.admin.entity
+package com.lq186.admin.model.entity
 
 import com.lq186.admin.common.EntityIdable
 

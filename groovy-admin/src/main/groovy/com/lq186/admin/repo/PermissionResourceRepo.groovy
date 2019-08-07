@@ -1,6 +1,6 @@
 package com.lq186.admin.repo
 
-import com.lq186.admin.entity.PermissionResource
+import com.lq186.admin.model.entity.PermissionResource
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

@@ -35,7 +35,7 @@ class UserIdInterceptor implements HandlerInterceptor {
             return false
         }
 
-        //TODO: Get user info from redis
+        //TODO: Get user info viewFromEntity redis
         UserIdContenxt.setUserId(token)
 
         return true

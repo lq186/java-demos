@@ -4,10 +4,10 @@ import com.lq186.admin.config.GlobalSetting
 import com.lq186.admin.consts.Errors
 import com.lq186.admin.consts.Log
 import com.lq186.admin.context.PageRequestContext
-import com.lq186.admin.entity.OperationLog
-import com.lq186.admin.entity.PermissionResource
-import com.lq186.admin.entity.Role
-import com.lq186.admin.entity.User
+import com.lq186.admin.model.entity.OperationLog
+import com.lq186.admin.model.entity.PermissionResource
+import com.lq186.admin.model.entity.Role
+import com.lq186.admin.model.entity.User
 import com.lq186.admin.exception.CodeException
 import com.lq186.admin.repo.OperationLogRepo
 import com.lq186.admin.repo.PermissionResourceRepo

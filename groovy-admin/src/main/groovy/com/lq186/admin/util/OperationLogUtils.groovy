@@ -1,7 +1,7 @@
 package com.lq186.admin.util
 
 import com.lq186.admin.context.UserIdContenxt
-import com.lq186.admin.entity.OperationLog
+import com.lq186.admin.model.entity.OperationLog
 
 final class OperationLogUtils {
 

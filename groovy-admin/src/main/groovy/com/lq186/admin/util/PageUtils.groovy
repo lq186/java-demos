@@ -1,6 +1,7 @@
 package com.lq186.admin.util
 
 import com.lq186.admin.common.EntityIdable
+import com.lq186.admin.model.views.PageData
 import org.springframework.data.domain.Page
 
 final class PageUtils {
@@ -25,6 +26,18 @@ final class PageUtils {
         map.put("content", content)
 
         return map
+    }
+
+    static <V, E extends EntityIdable> PageData<V> toView(Page<E> page, Class<V> classOfV) {
+        return new PageData<>(
+                page: page.number,
+                size: page.size,
+                first: page.first,
+                last: page.last,
+                totalElements: page.totalElements,
+                totalPages: page.totalPages,
+                content: BeanUtils.viewFromEntity(page.content, classOfV)
+        )
     }
 
 }

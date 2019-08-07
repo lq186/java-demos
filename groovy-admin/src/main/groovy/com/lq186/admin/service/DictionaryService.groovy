@@ -1,6 +1,6 @@
 package com.lq186.admin.service
 
-import com.lq186.admin.entity.Dictionary
+import com.lq186.admin.model.entity.Dictionary
 import org.springframework.data.domain.Page
 
 interface DictionaryService {

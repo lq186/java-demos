@@ -1,6 +1,6 @@
 package com.lq186.admin.service
 
-import com.lq186.admin.entity.Setting
+import com.lq186.admin.model.entity.Setting
 import org.springframework.data.domain.Page
 
 interface SettingService {

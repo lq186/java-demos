@@ -1,6 +1,52 @@
 package com.lq186.admin.util
 
+import com.lq186.admin.common.EntityIdable
+import com.lq186.admin.model.params.Param
+
 final class BeanUtils {
+
+    static <V, E extends EntityIdable> V viewFromEntity(E entity, Class<V> classOfV) {
+        V instance = classOfV.newInstance()
+        def properties = instance.getProperties().keySet()
+        def propertiesArray = []
+        properties.each {
+            it == "id" ? propertiesArray.add("dataId -> id") : propertiesArray.add(it)
+        }
+        copyPropertiesIfNoneNullAndNotEquals(entity, instance, propertiesArray)
+        return instance
+    }
+
+    static <V, E extends EntityIdable> List<V> viewFromEntity(List<E> entities, Class<V> classOfV) {
+        if (!entities) {
+            return []
+        }
+
+        V instance = classOfV.newInstance()
+        def properties = instance.getProperties().keySet()
+        def propertiesArray = []
+        properties.each {
+            it == "id" ? propertiesArray.add("dataId -> id") : propertiesArray.add(it)
+        }
+
+        def array = []
+        entities.each {
+            instance = classOfV.newInstance()
+            copyPropertiesIfNoneNullAndNotEquals(it, instance, propertiesArray)
+            array.add(instance)
+        }
+        return array
+    }
+
+    static <E extends EntityIdable> E entityFromParam(Param param, Class<E> classOfE) {
+        E instance = classOfE.newInstance()
+        def properties = param.getProperties().keySet()
+        def propertiesArray = []
+        properties.each {
+            it == "id" ? propertiesArray.add("id -> dataId") : propertiesArray.add(it)
+        }
+        copyPropertiesIfNoneNullAndNotEquals(param, instance, propertiesArray)
+        return instance
+    }
 
     def static toMap(def bean, List<String> properties) {
         def map = [:]

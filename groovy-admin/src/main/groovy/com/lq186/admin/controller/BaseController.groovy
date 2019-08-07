@@ -1,53 +1,72 @@
 package com.lq186.admin.controller
 
 import com.lq186.admin.common.ResponseBean
+import com.lq186.admin.model.params.Param
+import com.lq186.admin.util.BeanUtils
+import com.lq186.admin.util.PageUtils
 import com.lq186.admin.util.RequestParamUtils
+import org.springframework.core.ResolvableType
 import org.springframework.data.domain.Page
 
-class BaseController<T> {
+abstract class BaseController<V, E, AddParams, UpdateParams> {
 
-    ResponseBean query(Closure<Page<?>> closure) {
-        return ResponseBean.success(closure.call())
+    ResponseBean<Page<V>> query(Closure<Page<E>> closure) {
+        Page<E> page = closure.call()
+        return ResponseBean.success(PageUtils.toView(page, ResolvableType.forClass(getClass()).getGeneric(0).getRawClass()))
     }
 
-    ResponseBean add(T entity, Closure<String> closure) {
-        def errorMap = RequestParamUtils.checkNonEmpty(null, entity, addCheckProperties())
-        addCustomCheck(errorMap, entity)
+    ResponseBean<String> add(AddParams params) {
+        def errorMap = RequestParamUtils.checkNonEmpty(null, params, addCheckProperties())
+        addCustomCheck(errorMap, params)
         RequestParamUtils.checkErrorMap(errorMap)
-        return ResponseBean.success(closure.call())
+        return ResponseBean.success(saveEntity(params, fromParam(params)))
     }
 
-    ResponseBean update(T entity, String dataId, Closure<Void> closure) {
-        RequestParamUtils.checkDataId(dataId)
-        def errorMap = RequestParamUtils.checkNonEmpty(null, entity, updateCheckProperties())
-        updateCustomCheck(errorMap, entity)
+    E fromParam(Param param) {
+        return BeanUtils.entityFromParam(param, ResolvableType.forClass(getClass()).getGeneric(1).getRawClass())
+    }
+
+    abstract String saveEntity(AddParams param, E entity)
+
+    ResponseBean<Void> update(UpdateParams params, String dataId) {
+        params["id"] = dataId
+        def errorMap = RequestParamUtils.checkNonEmpty(null, params, updateCheckProperties())
+        updateCustomCheck(errorMap, params)
         RequestParamUtils.checkErrorMap(errorMap)
-        closure.call()
+        updateEntity(params, fromParam(params), dataId)
         return ResponseBean.success()
     }
 
-    ResponseBean delete(String dataId, Closure<Void> closure) {
+    abstract void updateEntity(UpdateParams param, E entity, String dataId);
+
+    ResponseBean<Void> delete(String dataId, Closure<Void> closure) {
         RequestParamUtils.checkDataId(dataId)
         closure.call()
         return ResponseBean.success()
     }
 
-    ResponseBean find(String dataId, Closure<T> closure) {
+    ResponseBean<V> findView(String dataId, Closure<V> closure) {
         RequestParamUtils.checkDataId(dataId)
-        T entity = closure.call()
-        return ResponseBean.success(entity)
+        V view = closure.call()
+        return ResponseBean.success(view)
     }
 
-    ResponseBean success(Closure<Void> closure) {
+    ResponseBean<V> findEntity(String dataId, Closure<E> closure) {
+        RequestParamUtils.checkDataId(dataId)
+        E entity = closure.call()
+        return ResponseBean.success(BeanUtils.viewFromEntity(entity, ResolvableType.forClass(getClass()).getGeneric(0).getRawClass()))
+    }
+
+    ResponseBean<Void> success(Closure<Void> closure) {
         closure.call()
         return ResponseBean.success()
     }
 
-    protected void addCustomCheck(Map<String, Object> errorMap, T entity) {
+    protected void addCustomCheck(Map<String, Object> errorMap, AddParams params) {
 
     }
 
-    protected void updateCustomCheck(Map<String, Object> errorMap, T entity) {
+    protected void updateCustomCheck(Map<String, Object> errorMap, UpdateParams params) {
 
     }
 

@@ -3,20 +3,31 @@ package com.lq186.admin.controller
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.consts.Parameters
 import com.lq186.admin.context.UserIdContenxt
-import com.lq186.admin.entity.Role
-import com.lq186.admin.entity.User
+import com.lq186.admin.model.entity.Role
+import com.lq186.admin.model.entity.User
 import com.lq186.admin.exception.CodeException
 import com.lq186.admin.consts.Errors
+import com.lq186.admin.model.params.AddUserParam
+import com.lq186.admin.model.params.ModifyPasswordParam
+import com.lq186.admin.model.params.UpdateUserParam
+import com.lq186.admin.model.views.PageData
+import com.lq186.admin.model.views.PermissionResourceView
+import com.lq186.admin.model.views.UserView
 import com.lq186.admin.service.UserService
+import com.lq186.admin.util.BeanUtils
 import com.lq186.admin.util.RequestParamUtils
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.data.domain.Page
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -24,65 +35,75 @@ import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
 
 @RestController
+@Api(value = "/api/users", description = "管理员用户信息模块")
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-class UserController extends BaseController<User> {
+class UserController extends BaseController<UserView, User, AddUserParam, UpdateUserParam> {
 
     @Resource
     UserService userService
 
     @GetMapping
-    def query(@RequestParam(name = "usernameOrDisplayName", required = false) String usernameOrDisplayName,
-              @RequestParam(name = "useState", required = false) Integer useState) {
+    @ApiOperation("分页查询管理员用户信息")
+    @ApiImplicitParams([
+            @ApiImplicitParam(name = "usernameOrDisplayName", value = "用户名 或 显示名称 模糊查询" ),
+            @ApiImplicitParam(name = "useState", value = "使用状态[1 -> 正常, 2 -> 锁定, 3 -> 停用]", allowableValues = "1, 2, 3"),
+            @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "size", paramType = "query", value = "页面记录数", defaultValue = "10", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "sort", paramType = "query", value = "排序方式[prop:direction,...]", required = false, dataTypeClass = String.class)
+    ])
+    ResponseBean<PageData<UserView>> query(@RequestParam(name = "usernameOrDisplayName", required = false) String usernameOrDisplayName,
+                                 @RequestParam(name = "useState", required = false) Integer useState) {
         query {
             userService.findPage(usernameOrDisplayName, useState)
         }
     }
 
     @PostMapping
-    def add(@ModelAttribute User user, @RequestParam(Parameters.PASSWORD) String password,
-            @RequestParam(Parameters.CONFIRM_PASSWORD) String confirmPassword) {
-        checkUserAndPassword(user, password, confirmPassword)
-        add(user) {
-            userService.save(user, password)
-        }
+    @ApiOperation("新增管理员用户信息")
+    ResponseBean<String> add(@RequestBody AddUserParam param) {
+        checkUserAndPassword(param, param.password, param.confirmPassword)
+        super.add(param)
     }
 
-    @GetMapping("/{dataId}")
-    def find(@PathVariable("dataId") String dataId) {
-        find(dataId) {
+    @GetMapping("/{id}")
+    @ApiOperation("获取管理员用户信息")
+    ResponseBean<UserView> find(@PathVariable("id") String dataId) {
+        findEntity(dataId) {
             userService.findByDataId(dataId)
         }
     }
 
-    @PutMapping("/{dataId}")
-    def put(@ModelAttribute User user, @PathVariable("dataId") String dataId) {
-        update(user, dataId) {
-            userService.updateByDataId(user, dataId)
+    @PutMapping("/{id}")
+    @ApiOperation("更新管理员用户信息")
+    ResponseBean<Void> put(@RequestBody UpdateUserParam param, @PathVariable("id") String dataId) {
+        update(param, dataId) {
+            userService.updateByDataId(param, dataId)
         }
     }
 
-    @DeleteMapping("/{dataId}")
-    def delete(@PathVariable("dataId") String dataId) {
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除管理员用户信息")
+    ResponseBean<Void> delete(@PathVariable("id") String dataId) {
         delete(dataId) {
             userService.deleteByDataId(dataId)
         }
     }
 
     @PutMapping("/modify_password")
-    def modifyPassword(@RequestParam(Parameters.OLD_PASSWORD) String oldPassword,
-                       @RequestParam(Parameters.NEW_PASSWORD) String newPassword,
-                       @RequestParam(Parameters.CONFIRM_PASSWORD) String confirmPassword) {
+    @ApiOperation("修改自己的密码")
+    ResponseBean<Void> modifyPassword(@RequestBody ModifyPasswordParam param) {
 
-        checkPassword(oldPassword, newPassword, confirmPassword)
+        checkPassword(param.oldPassword, param.newPassword, param.confirmPassword)
 
         success {
             String dataId = UserIdContenxt.getUserId()
-            userService.updatePasswordByDataId(oldPassword, newPassword, dataId)
+            userService.updatePasswordByDataId(param.oldPassword, param.newPassword, dataId)
         }
     }
 
-    @PutMapping("/{dataId}/rest_password")
-    def restPassword(@PathVariable("dataId") String dataId) {
+    @PutMapping("/{id}/rest_password")
+    @ApiOperation("重置管理员用户密码")
+    ResponseBean<Void> restPassword(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
 
         success {
@@ -90,8 +111,9 @@ class UserController extends BaseController<User> {
         }
     }
 
-    @GetMapping("/{dataId}/roles")
-    def roles(@PathVariable("dataId") String dataId,
+    @GetMapping("/{id}/roles")
+    @ApiOperation("获取管理员角色信息")
+    def roles(@PathVariable("id") String dataId,
               @RequestParam(name = "pageable", required = false) Boolean pageable) {
         RequestParamUtils.checkDataId(dataId)
 
@@ -104,15 +126,17 @@ class UserController extends BaseController<User> {
         }
     }
 
-    @GetMapping("/{dataId}/resources")
-    def resources(@PathVariable("dataId") String dataId) {
+    @GetMapping("/{id}/resources")
+    @ApiOperation("获取管理员用户权限资源信息")
+    ResponseBean<PermissionResourceView> resources(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
         def resourceList = userService.findAllResources(dataId)
-        return ResponseBean.success(resourceList)
+        return ResponseBean.success(BeanUtils.viewFromEntity(resourceList, PermissionResourceView.class))
     }
 
     @GetMapping("/check")
-    def check(@RequestParam("username") String username) {
+    @ApiOperation("检测管理员用户名是否已经被占用")
+    ResponseBean<Void> check(@RequestParam("username") String username) {
         if (!username) {
             throw new CodeException(Errors.Code.PARAM_EMPTY, Errors.Msg.PARAM_EMPTY_MSG,
                     ["username": Errors.PARAM_EMPTY_MAP])
@@ -132,6 +156,16 @@ class UserController extends BaseController<User> {
         }
 
         return ResponseBean.success()
+    }
+
+    @Override
+    String saveEntity(AddUserParam param, User entity) {
+        return userService.save(entity, param.password)
+    }
+
+    @Override
+    void updateEntity(UpdateUserParam param, User entity, String dataId) {
+        userService.updateByDataId(entity, dataId)
     }
 
     def static checkPassword(String oldPassword, String newPassword, String confirmPassword) {
