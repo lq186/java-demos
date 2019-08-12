@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*    
     Copyright ©2019 lq186.com 
  
@@ -21,12 +24,16 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "ModifyPasswordParam", description = "修改密码参数")
 class ModifyPasswordParam {
 
+    @ApiModelProperty("旧密码")
     String oldPassword
 
+    @ApiModelProperty("新密码")
     String newPassword
 
+    @ApiModelProperty("确认新密码")
     String confirmPassword
 
 }

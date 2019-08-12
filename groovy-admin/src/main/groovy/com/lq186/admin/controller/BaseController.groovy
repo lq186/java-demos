@@ -1,9 +1,8 @@
 package com.lq186.admin.controller
 
 import com.lq186.admin.common.ResponseBean
-import com.lq186.admin.model.params.Param
+
 import com.lq186.admin.util.BeanUtils
-import com.lq186.admin.util.PageUtils
 import com.lq186.admin.util.RequestParamUtils
 import org.springframework.core.ResolvableType
 import org.springframework.data.domain.Page
@@ -12,7 +11,7 @@ abstract class BaseController<V, E, AddParams, UpdateParams> {
 
     ResponseBean<Page<V>> query(Closure<Page<E>> closure) {
         Page<E> page = closure.call()
-        return ResponseBean.success(PageUtils.toView(page, ResolvableType.forClass(getClass()).getGeneric(0).getRawClass()))
+        return ResponseBean.success(page, ResolvableType.forClass(getClass()).getGeneric(0).getRawClass())
     }
 
     ResponseBean<String> add(AddParams params) {
@@ -22,7 +21,7 @@ abstract class BaseController<V, E, AddParams, UpdateParams> {
         return ResponseBean.success(saveEntity(params, fromParam(params)))
     }
 
-    E fromParam(Param param) {
+    E fromParam(Object param) {
         return BeanUtils.entityFromParam(param, ResolvableType.forClass(getClass()).getGeneric(1).getRawClass())
     }
 

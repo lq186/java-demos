@@ -44,7 +44,7 @@ class WebConfig implements WebMvcConfigurer {
 
     @Override
     void addInterceptors(InterceptorRegistry registry) {
-        final patterns = ["/json/**.json", "/swagger**", "/webjars/**"]
+        final patterns = ["/json/**.json", "/swagger-resources/**", "/webjars/**"]
         registry.addInterceptor(pageRequestInterceptor).excludePathPatterns(patterns)
         registry.addInterceptor(userIdInterceptor).excludePathPatterns(patterns)
     }

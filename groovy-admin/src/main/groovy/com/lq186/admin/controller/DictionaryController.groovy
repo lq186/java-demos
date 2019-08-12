@@ -1,5 +1,6 @@
 package com.lq186.admin.controller
 
+import com.lq186.admin.annotation.ApiImplicitParamToken
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.model.entity.Dictionary
 import com.lq186.admin.model.params.AddDictionaryParam
@@ -35,6 +36,7 @@ class DictionaryController extends BaseController<DictionaryView, Dictionary, Ad
     @GetMapping
     @ApiOperation(value = "分页查询字典信息")
     @ApiImplicitParams([
+            @ApiImplicitParam(name = "token", paramType = "header", value = "access_token", dataTypeClass = String.class),
             @ApiImplicitParam(name = "queryText", value = "检索条件: 显示名称，字典值，分组模糊查询", required = false),
             @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", paramType = "query", value = "页面记录数", defaultValue = "10", dataTypeClass = Integer.class),
@@ -48,12 +50,14 @@ class DictionaryController extends BaseController<DictionaryView, Dictionary, Ad
 
     @PostMapping
     @ApiOperation(value = "新增字典信息")
+    @ApiImplicitParamToken
     ResponseBean<String> add(@RequestBody AddDictionaryParam param) {
         super.add(param)
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取字典信息")
+    @ApiImplicitParamToken
     ResponseBean<DictionaryView> find(@PathVariable("id") String dataId) {
         find(dataId) {
             dictionaryService.findByDataId(dataId)
@@ -62,6 +66,7 @@ class DictionaryController extends BaseController<DictionaryView, Dictionary, Ad
 
     @PutMapping("/{id}")
     @ApiOperation(value = "修改字典信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> update(@PathVariable("id") String dataId,
                               @RequestBody UpdateDictionaryParam param) {
         super.update(param, dataId)
@@ -69,6 +74,7 @@ class DictionaryController extends BaseController<DictionaryView, Dictionary, Ad
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除字典信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> delete(@PathVariable("id") String dataId) {
         delete(dataId) {
             dictionaryService.deleteByDataIds(dataId)

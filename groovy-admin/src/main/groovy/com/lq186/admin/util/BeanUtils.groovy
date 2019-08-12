@@ -1,7 +1,6 @@
 package com.lq186.admin.util
 
 import com.lq186.admin.common.EntityIdable
-import com.lq186.admin.model.params.Param
 
 final class BeanUtils {
 
@@ -37,7 +36,7 @@ final class BeanUtils {
         return array
     }
 
-    static <E extends EntityIdable> E entityFromParam(Param param, Class<E> classOfE) {
+    static <E extends EntityIdable> E entityFromParam(Object param, Class<E> classOfE) {
         E instance = classOfE.newInstance()
         def properties = param.getProperties().keySet()
         def propertiesArray = []

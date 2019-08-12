@@ -2,10 +2,11 @@ package com.lq186.admin.common
 
 import com.lq186.admin.consts.Response
 import com.lq186.admin.model.views.PageData
+import com.lq186.admin.util.BeanUtils
 import com.lq186.admin.util.PageUtils
 import org.springframework.data.domain.Page
 
-final class ResponseBean<T> implements Serializable {
+class ResponseBean<T> implements Serializable {
 
     String code
 
@@ -40,7 +41,15 @@ final class ResponseBean<T> implements Serializable {
         new ResponseBean(
                 code: Response.Code.OK,
                 msg: Response.Msg.OK_MSG,
-                data: view ?: null
+                data: view == null ?: view
+        )
+    }
+
+    static <V, E extends EntityIdable> ResponseBean<List<V>> success(List<E> entityList, Class<V> classOfV) {
+        new ResponseBean(
+                code: Response.Code.OK,
+                msg: Response.Msg.OK_MSG,
+                data: entityList == null ?: BeanUtils.viewFromEntity(entityList, classOfV)
         )
     }
 

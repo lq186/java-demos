@@ -45,4 +45,7 @@ final class PageRequestContext {
         }
     }
 
+    static void clearPageRequest() {
+        PAGE_REQUEST_THREAD_LOCAL.remove()
+    }
 }

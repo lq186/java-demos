@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*    
     Copyright ©2019 lq186.com 
  
@@ -21,11 +24,13 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "AddRoleParam", description = "新增角色信息参数")
 class AddRoleParam {
 
-    // 角色名称
+    @ApiModelProperty("角色名称")
     String roleName
 
+    @ApiModelProperty("权限资源数据ID #PermissionResourceView.id")
     List<String> resourceDataIds
 
 }

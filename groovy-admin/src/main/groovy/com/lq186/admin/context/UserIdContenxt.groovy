@@ -19,4 +19,7 @@ final class UserIdContenxt {
         return userId
     }
 
+    static void clearUserId() {
+        USER_ID_THREAD_LOCAL.remove()
+    }
 }

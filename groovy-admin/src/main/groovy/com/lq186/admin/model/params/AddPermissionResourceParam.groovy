@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*    
     Copyright ©2019 lq186.com 
  
@@ -21,24 +24,25 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "AddPermissionResourceParam", description = "新增权限资源信息参数")
 class AddPermissionResourceParam {
 
-    // 资源标识
+    @ApiModelProperty("资源标识")
     String resourceId
 
-    // 资源名称
+    @ApiModelProperty("资源名称")
     String resourceName
 
-    // 资源值
+    @ApiModelProperty("资源值")
     String resourceValue
 
-    // 资源类型：1 目录 | 2 页面视图 | 3 按钮 | 9 API
+    @ApiModelProperty(value = "资源类型 [1 目录 | 2 页面视图 | 3 按钮 | 9 API]", allowableValues = "1, 2, 3, 9")
     Integer resourceType
 
-    // 上级资源数据ID
+    @ApiModelProperty(value = "上级资源数据ID", required = false)
     String parentResourceDataId
 
-    // 排序号
+    @ApiModelProperty("排序号")
     Integer serialNumber
 
 }

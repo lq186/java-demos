@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*    
     Copyright ©2019 lq186.com 
  
@@ -21,18 +24,19 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "UpdateSettingParam", description = "修改配置信息参数")
 class UpdateSettingParam {
 
-    // 配置组名称
+    @ApiModelProperty("配置组名称")
     String itemGroup
 
-    // 配置项
+    @ApiModelProperty("配置项")
     String itemKey
 
-    // 配置值
+    @ApiModelProperty("配置值")
     String itemValue
 
-    // 配置描述
+    @ApiModelProperty("配置描述")
     String itemDescription
     
 }

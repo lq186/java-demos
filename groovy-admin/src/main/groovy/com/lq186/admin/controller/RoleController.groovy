@@ -1,5 +1,7 @@
 package com.lq186.admin.controller
 
+import com.lq186.admin.annotation.ApiImplicitParamToken
+import com.lq186.admin.annotation.ApiPageableParams
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.model.entity.PermissionResource
 import com.lq186.admin.model.entity.Role
@@ -31,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
 
 @RestController
-@Api(value = "/api/roles", description = "角色信息模块")
+@Api(value = "/api/roles", tags = "角色信息模块")
 @RequestMapping(value = "/api/roles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 class RoleController extends BaseController<RoleView, Role, AddRoleParam, UpdateRoleParam> {
 
@@ -41,6 +43,7 @@ class RoleController extends BaseController<RoleView, Role, AddRoleParam, Update
     @GetMapping
     @ApiOperation("分页查询角色信息")
     @ApiImplicitParams([
+            @ApiImplicitParam(name = "token", paramType = "header", value = "access_token", dataTypeClass = String.class),
             @ApiImplicitParam(name = "roleName", value = "角色名称"),
             @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", paramType = "query", value = "页面记录数", defaultValue = "10", dataTypeClass = Integer.class),
@@ -54,12 +57,14 @@ class RoleController extends BaseController<RoleView, Role, AddRoleParam, Update
 
     @PostMapping
     @ApiOperation("新增角色信息")
+    @ApiImplicitParamToken
     ResponseBean<String> add(@RequestBody AddRoleParam param) {
         super.add(param)
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取角色信息")
+    @ApiImplicitParamToken
     ResponseBean<RoleView> find(@PathVariable("id") String dataId) {
         findEntity(dataId) {
             roleService.findByDataId(dataId)
@@ -68,40 +73,50 @@ class RoleController extends BaseController<RoleView, Role, AddRoleParam, Update
 
     @PutMapping("/{id}")
     @ApiOperation("更新角色信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> update(@PathVariable("id") String dataId, @RequestBody UpdateRoleParam param) {
         super.update(param, dataId)
     }
 
+    @GetMapping("/{id}/resources/pageable")
+    @ApiOperation("分页获取角色下的权限资源信息")
+    @ApiPageableParams
+    ResponseBean<PageData<PermissionResourceView>> findResourcesPageable(@PathVariable("id") String dataId) {
+        RequestParamUtils.checkDataId(dataId)
+        Page<PermissionResource> page = roleService.findResourcesPageByDataIdIn(dataId)
+        return ResponseBean.success(page, PermissionResourceView.class)
+    }
+
     @GetMapping("/{id}/resources")
     @ApiOperation("获取角色下的权限资源信息")
-    def findResources(@PathVariable("id") String dataId,
-                      @RequestParam(name = "pageable", required = false) Boolean pageable) {
+    @ApiImplicitParamToken
+    ResponseBean<List<PermissionResourceView>> findResources(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
-        if (pageable) {
-            Page<PermissionResource> page = roleService.findResourcesPageByDataIdIn(dataId)
-            return ResponseBean.success(PageUtils.toView(page, PermissionResourceView.class))
-        } else {
-            List<PermissionResource> resourceList = roleService.findResourcesByDataIdIn(dataId)
-            return ResponseBean.success(BeanUtils.viewFromEntity(resourceList, PermissionResourceView.class))
-        }
+        List<PermissionResource> resourceList = roleService.findResourcesByDataIdIn(dataId)
+        return ResponseBean.success(resourceList, PermissionResourceView.class)
+    }
+
+    @GetMapping("/resources/pageable")
+    @ApiOperation("分页获取角色下的权限资源信息")
+    @ApiPageableParams
+    ResponseBean<PageData<PermissionResourceView>> findRelResourcesByDataIdsPageable(@RequestParam("ids") String[] dataIds) {
+        RequestParamUtils.checkParamNoneEmpty("ids", dataIds)
+        Page<PermissionResource> page = roleService.findResourcesPageByDataIdIn(dataIds)
+        return ResponseBean.success(page, PermissionResourceView.class)
     }
 
     @GetMapping("/resources")
     @ApiOperation("获取角色下的权限资源信息")
-    def findRelResourcesByDataIds(@RequestParam("ids") String[] dataIds,
-                                  @RequestParam(name = "pageable", required = false) Boolean pageable) {
+    @ApiImplicitParamToken
+    ResponseBean<List<PermissionResourceView>> findRelResourcesByDataIds(@RequestParam("ids") String[] dataIds) {
         RequestParamUtils.checkParamNoneEmpty("ids", dataIds)
-        if (pageable) {
-            Page<PermissionResource> page = roleService.findResourcesPageByDataIdIn(dataIds)
-            return ResponseBean.success(PageUtils.toView(page, PermissionResourceView.class))
-        } else {
-            List<PermissionResource> resourceList = roleService.findResourcesByDataIdIn(dataIds)
-            return ResponseBean.success(BeanUtils.viewFromEntity(resourceList, PermissionResourceView.class))
-        }
+        List<PermissionResource> resourceList = roleService.findResourcesByDataIdIn(dataIds)
+        return ResponseBean.success(resourceList, PermissionResourceView.class)
     }
 
     @PutMapping("/{id}/resources")
     @ApiOperation("更新角色下的权限资源信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> updateRelResources(@PathVariable("id") String dataId,
                            @RequestBody List<String> resourceDataIds) {
         RequestParamUtils.checkDataId(dataId)
@@ -111,6 +126,7 @@ class RoleController extends BaseController<RoleView, Role, AddRoleParam, Update
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除角色信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> delete(@PathVariable("id") String dataId) {
         delete(dataId) {
             roleService.deleteByDataId(dataId)

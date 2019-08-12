@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*
     Copyright ©2019 lq186.com 
  
@@ -21,32 +24,31 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "AddUserParam", description = "新增管理员用户信息参数")
 class AddUserParam {
 
-    // 用户名
+    @ApiModelProperty("用户名")
     String username
 
-    // 显示名称
+    @ApiModelProperty("显示名称")
     String displayName
 
+    @ApiModelProperty("密码")
     String password
 
+    @ApiModelProperty("确认密码")
     String confirmPassword
 
-    // 是否超级用户
-    // true 是 | false 否
+    @ApiModelProperty("是否超级用户 [true 是 | false 否]")
     Boolean superUser
 
-    // 使用状态
-    // 1 正常 | 2 锁定 | 3 停用
+    @ApiModelProperty(value = "使用状态 [1 正常 | 2 锁定 | 3 停用]", allowableValues = "1, 2, 3")
     Integer useState
 
-    // 有效时间
-    // 单位: 毫秒(ms)
+    @ApiModelProperty("有效时间, 单位: 毫秒(ms)")
     Long activeTime
 
-    // 失效时间
-    // 单位: 毫秒(ms)
+    @ApiModelProperty("失效时间, 单位: 毫秒(ms)")
     Long invalidTime
 
 }

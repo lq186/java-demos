@@ -6,6 +6,7 @@ import com.lq186.admin.context.UserIdContenxt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
+import org.springframework.lang.Nullable
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
@@ -23,7 +24,7 @@ class UserIdInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true
         }
-        return true
+
         def token = request.getHeader(Parameters.TOKEN)
         if (!token) {
             token = request.getParameter(Parameters.TOKEN)
@@ -39,6 +40,11 @@ class UserIdInterceptor implements HandlerInterceptor {
         UserIdContenxt.setUserId(token)
 
         return true
+    }
+
+    @Override
+    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        UserIdContenxt.clearUserId()
     }
 
     private void sendJsonData(HttpServletResponse response, String data) {

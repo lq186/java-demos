@@ -1,10 +1,9 @@
 package com.lq186.admin.controller
 
+import com.lq186.admin.annotation.ApiImplicitParamToken
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.model.entity.PermissionResource
 import com.lq186.admin.model.params.AddPermissionResourceParam
-import com.lq186.admin.model.params.Param
-import com.lq186.admin.model.params.UpdateDictionaryParam
 import com.lq186.admin.model.params.UpdatePermissionResourceParam
 import com.lq186.admin.model.views.PageData
 import com.lq186.admin.model.views.PermissionResourceView
@@ -17,7 +16,6 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -29,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
 
 @RestController
-@Api(value = "/api/resources", description = "权限资源信息模块")
+@Api(value = "/api/resources", tags = "权限资源信息模块")
 @RequestMapping(value = "/api/resources", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 class PermissionResourceController extends BaseController<PermissionResourceView, PermissionResource, AddPermissionResourceParam, UpdatePermissionResourceParam> {
 
@@ -39,6 +37,7 @@ class PermissionResourceController extends BaseController<PermissionResourceView
     @GetMapping
     @ApiOperation("分页查询权限资源信息")
     @ApiImplicitParams([
+            @ApiImplicitParam(name = "token", paramType = "header", value = "access_token", dataTypeClass = String.class),
             @ApiImplicitParam(name = "queryText", value = "资源编码，资源名称，资源值 模糊查询"),
             @ApiImplicitParam(name = "resourceType", value = "资源类型[1 -> 目录, 2 -> 页面, 3 -> 按钮, 9 -> API]", allowableValues = "1, 2, 3, 9"),
             @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
@@ -55,13 +54,15 @@ class PermissionResourceController extends BaseController<PermissionResourceView
 
     @PostMapping
     @ApiOperation("新增权限资源信息")
+    @ApiImplicitParamToken
     ResponseBean<String> add(@RequestBody AddPermissionResourceParam param) {
         super.add(param)
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取权限资源信息")
-    def find(@PathVariable("id") String dataId) {
+    @ApiImplicitParamToken
+    ResponseBean<PermissionResourceView> find(@PathVariable("id") String dataId) {
         findEntity(dataId) {
             permissionResourceService.findByDataId(dataId)
         }
@@ -69,13 +70,15 @@ class PermissionResourceController extends BaseController<PermissionResourceView
 
     @PutMapping("/{id}")
     @ApiOperation("更新权限资源信息")
-    def update(@PathVariable("id") String dataId, @RequestBody UpdatePermissionResourceParam param) {
+    @ApiImplicitParamToken
+    ResponseBean<Void> update(@PathVariable("id") String dataId, @RequestBody UpdatePermissionResourceParam param) {
         super.update(param, dataId)
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除权限资源信息")
-    def delete(@PathVariable("id") String dataId) {
+    @ApiImplicitParamToken
+    ResponseBean<Void> delete(@PathVariable("id") String dataId) {
         delete(dataId) {
             permissionResourceService.deleteByDataId(dataId)
         }
@@ -83,7 +86,8 @@ class PermissionResourceController extends BaseController<PermissionResourceView
 
     @GetMapping("/max_serial_number")
     @ApiOperation("获取权限资源下的最大序号, 默认根权限资源下的最大序号")
-    def maxSerialNumber(@RequestParam(name = "id", required = false, defaultValue = PermissionResource.ROOT_CATALOG_ID) String dataId) {
+    @ApiImplicitParamToken
+    ResponseBean<Integer> maxSerialNumber(@RequestParam(name = "id", required = false, defaultValue = PermissionResource.ROOT_CATALOG_ID) String dataId) {
         def maxSerialNumber = permissionResourceService.maxSerialNumber(dataId)
         return ResponseBean.success(maxSerialNumber)
     }
@@ -118,7 +122,7 @@ class PermissionResourceController extends BaseController<PermissionResourceView
         checkResourceType(errorMap, param)
     }
 
-    private void checkResourceType(Map<String, Object> errorMap, Param param) {
+    private void checkResourceType(Map<String, Object> errorMap, Object param) {
         RequestParamUtils.checkWithClosures(errorMap, param,
                 ["resourceType": { PermissionResource.ResourceType.hasType(it as Integer) }]
         )

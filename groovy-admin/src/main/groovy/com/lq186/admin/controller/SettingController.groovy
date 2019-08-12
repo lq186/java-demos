@@ -1,5 +1,6 @@
 package com.lq186.admin.controller
 
+import com.lq186.admin.annotation.ApiImplicitParamToken
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.model.entity.Setting
 import com.lq186.admin.model.params.AddSettingParam
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
 
 @RestController
-@Api(value = "/api/settings", description = "配置信息模块")
+@Api(value = "/api/settings", tags = "配置信息模块")
 @RequestMapping(value = "/api/settings", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 class SettingController extends BaseController<SettingView, Setting, AddSettingParam, UpdateSettingParam> {
 
@@ -35,6 +36,7 @@ class SettingController extends BaseController<SettingView, Setting, AddSettingP
     @GetMapping
     @ApiOperation("分页查询配置信息")
     @ApiImplicitParams([
+            @ApiImplicitParam(name = "token", paramType = "header", value = "access_token", dataTypeClass = String.class),
             @ApiImplicitParam(name = "itemText", value = "配置组，配置项，配置值和配置说明 模糊查询"),
             @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", paramType = "query", value = "页面记录数", defaultValue = "10", dataTypeClass = Integer.class),
@@ -48,12 +50,14 @@ class SettingController extends BaseController<SettingView, Setting, AddSettingP
 
     @PostMapping
     @ApiOperation("新增配置信息")
+    @ApiImplicitParamToken
     ResponseBean<String> add(@RequestBody AddSettingParam param) {
         super.add(param)
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取配置信息")
+    @ApiImplicitParamToken
     ResponseBean<SettingView> find(@PathVariable("id") String dataId) {
         findEntity(dataId) {
             settingService.findByDataId(dataId)
@@ -62,12 +66,14 @@ class SettingController extends BaseController<SettingView, Setting, AddSettingP
 
     @PutMapping("/{id}")
     @ApiOperation("更新配置信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> updateByDataId(@PathVariable("id") String dataId, @RequestBody UpdateSettingParam param) {
         super.update(param, dataId)
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除配置信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> deleteByDataId(@PathVariable("id") String dataId) {
         delete(dataId) {
             settingService.deleteByDataId(dataId)
@@ -76,6 +82,7 @@ class SettingController extends BaseController<SettingView, Setting, AddSettingP
 
     @GetMapping("/refresh")
     @ApiOperation("重新加载配置信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> refresh() {
         return ResponseBean.success()
     }

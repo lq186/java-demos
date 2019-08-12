@@ -1,5 +1,7 @@
 package com.lq186.admin.controller
 
+import com.lq186.admin.annotation.ApiImplicitParamToken
+import com.lq186.admin.annotation.ApiPageableParams
 import com.lq186.admin.common.ResponseBean
 import com.lq186.admin.consts.Parameters
 import com.lq186.admin.context.UserIdContenxt
@@ -12,9 +14,9 @@ import com.lq186.admin.model.params.ModifyPasswordParam
 import com.lq186.admin.model.params.UpdateUserParam
 import com.lq186.admin.model.views.PageData
 import com.lq186.admin.model.views.PermissionResourceView
+import com.lq186.admin.model.views.RoleView
 import com.lq186.admin.model.views.UserView
 import com.lq186.admin.service.UserService
-import com.lq186.admin.util.BeanUtils
 import com.lq186.admin.util.RequestParamUtils
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
@@ -35,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
 
 @RestController
-@Api(value = "/api/users", description = "管理员用户信息模块")
+@Api(value = "/api/users", tags = "管理员用户信息模块")
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 class UserController extends BaseController<UserView, User, AddUserParam, UpdateUserParam> {
 
@@ -45,6 +47,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
     @GetMapping
     @ApiOperation("分页查询管理员用户信息")
     @ApiImplicitParams([
+            @ApiImplicitParam(name = "token", paramType = "header", value = "access_token", dataTypeClass = String.class),
             @ApiImplicitParam(name = "usernameOrDisplayName", value = "用户名 或 显示名称 模糊查询" ),
             @ApiImplicitParam(name = "useState", value = "使用状态[1 -> 正常, 2 -> 锁定, 3 -> 停用]", allowableValues = "1, 2, 3"),
             @ApiImplicitParam(name = "page", paramType = "query", value = "页码", defaultValue = "1", dataTypeClass = Integer.class),
@@ -60,6 +63,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @PostMapping
     @ApiOperation("新增管理员用户信息")
+    @ApiImplicitParamToken
     ResponseBean<String> add(@RequestBody AddUserParam param) {
         checkUserAndPassword(param, param.password, param.confirmPassword)
         super.add(param)
@@ -67,6 +71,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @GetMapping("/{id}")
     @ApiOperation("获取管理员用户信息")
+    @ApiImplicitParamToken
     ResponseBean<UserView> find(@PathVariable("id") String dataId) {
         findEntity(dataId) {
             userService.findByDataId(dataId)
@@ -75,6 +80,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @PutMapping("/{id}")
     @ApiOperation("更新管理员用户信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> put(@RequestBody UpdateUserParam param, @PathVariable("id") String dataId) {
         update(param, dataId) {
             userService.updateByDataId(param, dataId)
@@ -83,6 +89,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除管理员用户信息")
+    @ApiImplicitParamToken
     ResponseBean<Void> delete(@PathVariable("id") String dataId) {
         delete(dataId) {
             userService.deleteByDataId(dataId)
@@ -91,6 +98,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @PutMapping("/modify_password")
     @ApiOperation("修改自己的密码")
+    @ApiImplicitParamToken
     ResponseBean<Void> modifyPassword(@RequestBody ModifyPasswordParam param) {
 
         checkPassword(param.oldPassword, param.newPassword, param.confirmPassword)
@@ -103,6 +111,7 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
 
     @PutMapping("/{id}/rest_password")
     @ApiOperation("重置管理员用户密码")
+    @ApiImplicitParamToken
     ResponseBean<Void> restPassword(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
 
@@ -111,31 +120,36 @@ class UserController extends BaseController<UserView, User, AddUserParam, Update
         }
     }
 
+    @GetMapping("/{id}/roles/pageable")
+    @ApiOperation("分页获取管理员角色信息")
+    @ApiPageableParams
+    ResponseBean<PageData<RoleView>> rolesPageable(@PathVariable("id") String dataId) {
+        RequestParamUtils.checkDataId(dataId)
+        Page<Role> page = userService.findRolePage(dataId)
+        return ResponseBean.success(page, RoleView.class)
+    }
+
     @GetMapping("/{id}/roles")
     @ApiOperation("获取管理员角色信息")
-    def roles(@PathVariable("id") String dataId,
-              @RequestParam(name = "pageable", required = false) Boolean pageable) {
+    @ApiImplicitParamToken
+    ResponseBean<List<RoleView>> roles(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
-
-        if (pageable) {
-            Page<Role> page = userService.findRolePage(dataId)
-            return ResponseBean.success(page)
-        } else {
-            def roleList = userService.findAllRole(dataId)
-            return ResponseBean.success(roleList)
-        }
+        def roleList = userService.findAllRole(dataId)
+        return ResponseBean.success(roleList, RoleView.class)
     }
 
     @GetMapping("/{id}/resources")
     @ApiOperation("获取管理员用户权限资源信息")
-    ResponseBean<PermissionResourceView> resources(@PathVariable("id") String dataId) {
+    @ApiImplicitParamToken
+    ResponseBean<List<PermissionResourceView>> resources(@PathVariable("id") String dataId) {
         RequestParamUtils.checkDataId(dataId)
         def resourceList = userService.findAllResources(dataId)
-        return ResponseBean.success(BeanUtils.viewFromEntity(resourceList, PermissionResourceView.class))
+        return ResponseBean.success(resourceList, PermissionResourceView.class)
     }
 
     @GetMapping("/check")
     @ApiOperation("检测管理员用户名是否已经被占用")
+    @ApiImplicitParamToken
     ResponseBean<Void> check(@RequestParam("username") String username) {
         if (!username) {
             throw new CodeException(Errors.Code.PARAM_EMPTY, Errors.Msg.PARAM_EMPTY_MSG,

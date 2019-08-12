@@ -1,5 +1,8 @@
 package com.lq186.admin.model.params
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
 /*    
     Copyright ©2019 lq186.com 
  
@@ -21,9 +24,10 @@ package com.lq186.admin.model.params
     Author: lq
 */
 
+@ApiModel(value = "UpdateRoleParam", description = "修改角色信息参数")
 class UpdateRoleParam {
 
-    // 角色名称
+    @ApiModelProperty("角色名称")
     String roleName
 
 }

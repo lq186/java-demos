@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty
 */
 
 @ApiModel(value = "UpdateDictionaryParam", description = "修改字典信息参数")
-class UpdateDictionaryParam implements Param {
+class UpdateDictionaryParam {
 
     @ApiModelProperty("字典信息值")
     String value

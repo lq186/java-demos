@@ -1,6 +1,7 @@
 package com.lq186.admin.interceptor
 
 import com.lq186.admin.context.PageRequestContext
+import org.springframework.lang.Nullable
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
@@ -23,5 +24,10 @@ class PageRequestInterceptor implements HandlerInterceptor {
                 sort
         )
         return true
+    }
+
+    @Override
+    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        PageRequestContext.clearPageRequest()
     }
 }
